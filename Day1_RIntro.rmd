@@ -1,0 +1,627 @@
+---
+title: "Tutorial Part I - Quick introduction to R"
+author: "Stephanie Kramer-Schadt, Alex courtiol, Moritz Wenzler"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    code_folding: show
+    link-citations: yes
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+  slidy_presentation: default
+editor_options:
+  chunk_output_type: console
+---
+# Basics
+
+## Setting the work directory
+
+Please set your OWN working directory!
+Function **paste** 
+
+```{r}
+setwd('c:/Users/kramer/Dropbox/_TU_BiodivDynamics2019/Day1_RIntro')
+output_wd <- paste("c:/Users/kramer/Dropbox/_TU_BiodivDynamics2019", "/", "Output", sep = '')
+```
+
+## Basics: R for calculus
+hashtag # for comments
+
+```{r}
+
+# "comment"
+1+1
+# store calculus etc in an object
+what_is_one_plus_one <- 1+1
+# display result
+what_is_one_plus_one
+# assign character
+what_is_one_plus_one <- 'two'
+```
+
+## Basics: Common mistakes
+
+### Spelling - Case sensitivity
+
+```{r}
+#What_is_one_plus_one
+#what_is_one_plusone
+#what_is_one_plus_two
+```
+
+
+### Wrong assignment
+
+```{r, eval = F}
+ 1 + what_is_one_plus_one
+# why does this not work?
+
+ 1 + what_is_one_plus_one <- 1 + 2
+# nor this?
+```
+
+### Correct assignment
+
+```{r}
+what_is_one_plus_one <- 1 + 1
+1 + what_is_one_plus_one
+```
+
+## Basics: Getting help
+
+```{r}
+# <function_name> or <function_name>() shows the function
+
+ citation() # how to cite R
+ ?citation() # getting help use ? (or??) or
+ help(citation)
+```
+
+## Basics: Functions 
+
+functions indicated by ()
+
+```{r, eval = F}
+mean() # what's wrong?
+```
+
+this function needs further parameters
+```{r}
+?mean() # which ones?
+```
+
+
+
+### Assign values to the function
+
+```{r}
+#- Use the command 'c' - it combines values into a vector or list
+vector_of_numbers <- c(22, 65, 101, 86, 110)
+# e.g. wingspan of dragonflies in mm 
+vector_of_numbers
+mean(x = vector_of_numbers)
+```
+
+### Arguments
+
+```{r}
+mean(x = vector_of_numbers) #n.b. better use argument names
+```
+
+```{r, eval = F}
+mean(y = vector_of_numbers) #what's wrong?
+```
+
+```{r}
+# analogously: more useful functions/ commands:
+sqrt(x = vector_of_numbers) # exp(), sin(), log()...
+sum(x = vector_of_numbers)
+```
+
+
+### Applying functions
+
+```{r}
+# Assign the assigned values
+wsp_drfly <- vector_of_numbers #wingspan of dragonflies
+wsp_drfly
+mean(x = wsp_drfly)
+
+# Adding data, e.g. new measurements
+wsp_drfly2 <- c(vector_of_numbers, wsp_drfly ,69 ,73)
+wsp_drfly2
+```
+
+## Useful functions
+
+```{r}
+table(wsp_drfly2) # returns the counts
+sort(x = wsp_drfly2)
+min(wsp_drfly2) #analogous max, var, sd, range, median
+```
+
+
+```{r}
+unique(x = wsp_drfly2) # n.b. - does not sort vector
+length(x = wsp_drfly2)
+summary(object = wsp_drfly2)
+```
+
+## Operators 
+###Arithmetic operators
+
+```{r}
+
+?Arithmetic
+wsp_drfly2 * 2
+wsp_drfly2 * 10 - 100
+```
+
+###Logical operators
+
+```{r}
+
+?Logic
+wsp_drfly2 > 10 # >=, <, <=, &, | , !=, ==
+wsp_drfly2 == 75 # n.b. difference to = or <- !!!!
+```
+
+<br><br>
+
+# Data Types and Data Manipulation 
+
+## Create Data Set with Vectors
+
+#### Repeat data with command *rep*
+
+```{r}
+
+# wingspan of butterflies in mm 
+wsp_butfly2 <- c(12, 48, 79, 135, 189, 88, 15, 63, 21, 81, 148, 50)
+data_length <- length(x = wsp_butfly2) #12
+wsp <- c(wsp_drfly2, wsp_butfly2)
+insect_type <- factor(x = c(rep('dragonfly', data_length),
+                            rep('butterfly', data_length))
+                      )
+# n.b. correct position of parentheses when functions nested
+insect_type
+```
+
+## Dataframe [df]
+
+```{r}
+wsp_table <- data.frame(wingspan = wsp, insect = insect_type)
+head(x = wsp_table) # head() returns first 6 rows # tail()
+wsp_table
+
+## Retrieving data from df
+str(object = wsp_table)
+wsp
+wsp_table$wingspan # access data with dollar sign
+#**What is the average wsp?**
+```
+
+### Indexing elements
+
+#### Indexing a vector[element]
+
+```{r}
+vector_of_numbers[3]
+# vector_of_numbers[c(1, 3:5)]
+# why c(...)? Because the comma is another dimension.
+# dimension in R: [row, column]
+# Not run: vector_of_numbers[1, 3:5] #error
+```
+
+#### Indexing with [row,column]
+
+```{r}
+wsp_table[2, 2] # == wsp_table$insect[2] #!
+wsp_table[2, 1] # == wsp_table$wingspan[2] #!
+wsp_table[2, ]
+```
+
+```{r}
+wsp_table[, 2]
+```
+
+```{r, eval = F}
+ wsp_table[, 3] #what's wrong?
+```
+
+```{r}
+wsp_table[c(2:5), 2]
+```
+
+### Dataframe queries
+
+#### Function *tapply* / table apply 
+
+**What is the average wingspan PER insect species?**
+
+```{r}
+mean(x = wsp_table$wingspan[wsp_table$insect == 'dragonfly']) # == !
+#- more elegant: function 'tapply'
+tapply(X = wsp_table$wingspan, INDEX = wsp_table$insect, FUN = mean)
+```
+
+#### Subsetting 
+
+##### simple: function *subset*
+
+```{r}
+wsp_sub <- subset(x = wsp_table, subset = wsp_table$wingspan <= 65)
+nrow(wsp_sub) # try also: dim(wsp_sub),dim(wsp_sub)[1]
+wsp_sub
+```
+
+##### A bit more complicated: function *which*
+
+```{r}
+wsp_tmp <- which(x = wsp_table$wingspan <= 65)
+wsp_tmp
+wsp_which <- wsp_table[wsp_tmp,]
+wsp_which
+```
+
+### Data Manipulation
+#### Removing rows/columns 
+
+Omit rows using a minus sign
+
+```{r}
+x <- wsp_which
+x
+x2 <- x[-c(1, 3), ] #remove rows
+x2
+```
+
+
+Omit columns
+
+```{r}
+x22 <- x$wingspan #removes (actually keeps) columns
+x22
+```
+
+#### Adding rows/columns I
+
+##### Combine data with *rbind()*
+
+```{r}
+x3 <- rbind(x2, wsp_table)
+x3[1:10,] # n.b. new row names 41, 91 !
+```
+
+##### Combine data with *cbind()*
+
+```{r}
+x4 <- cbind(vector_of_numbers[1:3], vector_of_numbers[3:5])
+x4
+colnames(x4) <- c('col1', 'col2')
+rownames(x4) <- c('A', 'B', 'C')
+x4
+```
+
+## List
+
+#### list per grouping factor (here: insect type)
+
+```{r}
+wsp_list <- list(dragonfly = wsp_drfly2, butterfly = wsp_butfly2)
+str(wsp_list)
+wsp_list$dragonfly # == wsp_list[['dragonfly']]
+lapply(X = wsp_list, FUN = mean) # OR: mean(wsp_list$dragonfly)
+```
+
+## Matrix 
+
+Definition per row or col, looses headers!
+matrix setup per row
+
+```{r}
+wsp_matrix <- matrix(data = c(wsp_drfly2, wsp_butfly2), nrow = 2)
+wsp_matrix
+# Does this format ring a bell????
+rownames(x = wsp_matrix) <- c('dragonfly', 'butterfly')
+wsp_matrix[, 1]
+wsp_matrix['dragonfly', ] # == wsp_matrix[1, ]
+```
+
+matrix setup per column
+
+```{r}
+wsp_matrix <- matrix(data = c(wsp_drfly2, wsp_butfly2), ncol = 2)
+wsp_matrix
+#head(wsp_matrix)
+#str(wsp_matrix)
+wsp_matrix[, 1]
+colnames(x = wsp_matrix) <- c('dragonfly', 'butterfly')
+#wsp_matrix$dragonfly
+wsp_matrix[, 'dragonfly'] # == wsp_matrix[, 1]
+```
+
+#### Extracting data from matrix 
+
+```{r}
+#wsp_matrix <- matrix(c(wsp_drfly2,wsp_butfly2), ncol=2)
+#colnames(wsp_matrix) <- c('dragonfly','butterfly')
+
+mean(x = wsp_matrix[, 1])
+apply(X = wsp_matrix, MARGIN = 2, FUN = mean)
+#check command, what is meant with 'by 2'?
+#check command, what happens if you use 1 instead?
+```
+
+## Missing Data NA
+
+```{r}
+wsp_fly2 <- c(1,5,4,11,8,2,NA,4,2,9,8,NA)
+mean(x = wsp_fly2)
+# type ?mean  # How to deal with missing data?
+
+mean(x = wsp_fly2, na.rm=T)
+```
+
+```{r}
+wsp_l <- list(dragonfly = wsp_drfly2, butterfly = wsp_butfly2, fly = wsp_fly2)
+lapply(X = wsp_l, FUN = mean)
+lapply(X = wsp_l, FUN = mean, na.rm = T)
+```
+
+## Data Manipulation: Summary
+
+```{r}
+#TRY
+# class(wsp_table) #class(wsp_matrix) #class(wsp_list)
+# on vectors: #class(insect_type) # class(wsp_l$dragonfly)
+# on skalars: #class(what_is_one_plus_one)
+```
+
+<br><br>
+
+# Managing Data 
+
+## Saving and Reading Files 
+
+```{r}
+getwd() # to change use setwd(), e.g. setwd('../Output')
+write.csv(x = wsp_table, file = "wsp.csv", row.names = FALSE)
+wsp <- read.csv(file = "wsp.csv", header = T)
+head(x = wsp)
+```
+
+<br><br>
+
+# Plotting with R 
+
+## Plotting: Basics
+
+**plot()** is the universal function for scatter plots or line diagrams
+
+```{r}
+plot(x = wsp)
+plot(x = wsp$wingspan)
+```
+
+
+Use command *ifelse* to define colors PER species
+
+```{r}
+color_for_insect_type <- ifelse(test = wsp$insect == 'dragonfly', yes = 'red', no = 'blue')
+# color_for_insect_type
+plot(x = wsp$wingspan, col= color_for_insect_type)
+```
+
+
+**par()** to pimp up your plot
+
+```{r}
+?par #to set graphical parameters
+ plot(x = wsp$wingspan, col = color_for_insect_type, pch = 3,
+      xlab = "unsorted values", ylab = "wsp [mm]", cex = 3,
+      cex.lab = 1.2, cex.axis = 0.5, las = 2,
+      col.axis = "blue")
+```
+
+## Plotting: Practical thingies 
+### plot-function
+#### Abline - Drawing lines (h=horizontal, v= vertical, or "intercept, slope")
+
+```{r}
+?abline
+plot(x = wsp$wingspan, col = color_for_insect_type)
+abline(v = 12.5, lty = "dashed", col = "red")
+                             #lty = line type
+abline(h = 75, lty = "dotted")
+```
+
+
+#### Drawing *arrows* and adding *text*
+
+```{r}
+plot(x = wsp$wingspan, col = color_for_insect_type,pch = 16, cex = 3)
+arrows(x0 = 5, y0 = 85, x1 = 5, y1 = 82, col = "purple")
+arrows(x0 = 15, y0 =  70, x1 = 17, y1 =  75, col = "black", lwd = 3) #lwd=line width
+text(x = 3, y = 70, labels = "DRAGONFLY",cex=0.8)
+```
+
+## Other plot types
+
+```{r}
+#First, create new data set called " mydata" with new column "wind_speed":
+wind_speed <- rep(x = 50:70, length.out = nrow(wsp))
+mydata <- cbind(wsp, wind_speed)
+head(x = mydata)
+```
+
+### *boxplot*, histogram (*hist*)
+
+```{r}
+par(mfrow = c(1, 2))
+boxplot(formula = mydata$wingspan ~ mydata$wind_speed)
+hist(x = mydata$wingspan, main = '')
+```
+
+### *hist* continued - the role of breaks and freq = F
+
+```{r}
+par(mfrow = c(1,2))
+hist(x = mydata$wingspan, breaks = 2, main = '')
+hist(x = mydata$wingspan, 
+     breaks = seq(min(mydata$wingspan),
+                  max(mydata$wingspan), 
+                  by = 3), 
+     freq = F, col = 'lightgrey', main = '')
+```
+
+
+```{r}
+my_h <- hist(x = mydata$wingspan, breaks = seq(min(mydata$wingspan), max(mydata$wingspan), by = 3), plot = FALSE)
+my_h
+```
+
+
+### barplot
+
+```{r}
+my_bp <- table(mydata$wingspan)
+my_bp # note the difference to histograms ($counts)!
+barplot(my_bp) # WHY is there a maximum of 3 counts in the histogram and 2 in the barplot?
+```
+
+
+### Conditional plot *coplot*
+
+```{r}
+coplot(formula = mydata$wingspan ~ mydata$wind_speed | mydata$insect, pch = 16)
+```
+
+## Plotting: Margins and multiple figures
+
+### Graphics device division
+
+```{r}
+par(mfrow = c(1, 2), mar = c(5, 4, 1, 1), oma = c(1.5, 2, 1, 1))
+plot(x = mydata$wingspan, col = color_for_insect_type, pch = 16, cex = 3)
+boxplot(formula = mydata$wingspan ~ mydata$insect)
+box(which = 'plot', col = 'red')
+box(which = 'figure', col = 'blue', lty = 'dashed')
+box(which = 'outer', col = 'green' , lwd = 5)
+```
+
+## Saving Plots
+
+works for jpg, pdf,png, wmf and postscript
+
+```{r}
+#- Single Plot
+pdf(file = 'MyPdf.pdf', width =  10, height = 10)
+with(data = mydata, expr = {coplot(wingspan ~ wind_speed | insect, pch=16)})
+dev.off()
+#- Multiple Plot
+jpeg(file = 'MyJPG.jpg')
+par(mfrow = c(1, 2))
+barplot(my_bp, col = rainbow(17), main = 'Barplot', xlab = 'wingspan', ylab = 'Count')
+hist(x = mydata$wingspan, 
+     breaks = seq(min(mydata$wingspan), 
+                  max(mydata$wingspan), 
+                  by = 3), 
+     freq = T, 
+     col = rainbow(6))
+dev.off()
+#n.b.! Correct output folder path!
+```
+
+<br><br>
+
+# Programming with R (shortly) 
+
+## Simulate your own data
+
+```{r}
+seq_data  <- seq(from = 1, to = 100, by = 1)
+uni_data  <- runif(n = 100, min = 1, max = 10)
+norm_data <- rnorm(n = 100, mean = 5, sd = 0.5)
+#simulate trend:
+trend_data <- 0.1 * seq_data + rnorm(n = length(seq_data), mean = 0, sd = 1)
+
+plot(x = seq_data, y = uni_data, pch = 15)
+points(x = norm_data, pch = 20, col = 'red')
+points(x = trend_data, pch = 17, col = 'blue')
+```
+
+### Just for fun: some stats....
+
+```{r}
+my.lm <- lm(formula = trend_data ~ seq_data)
+#abline(my.lm)
+summary(object = my.lm) #surprise....
+```
+
+## The *for* loop
+
+```{r}
+#- for repetitive operations
+#- *i* is used as variable that is incremented
+for(i in 1:4)
+{ #begin
+  print(x = i)
+  if (i == 4) print (x = 'end of lop')
+} # end
+?'for'
+#other useful control flow constructs are: *while*, *repeat*, *if*
+```
+
+## Writing your own function
+
+```{r}
+my_fct <- function(a) {-8.13 + (12.55 * a)}
+my_prob <- function(x) {1/ (1 + exp(x = -x))}
+
+# ff = e.g. frequency of forest in a cell
+ff <- seq(from = 0, to = 1 ,by = 0.05)
+
+logit_prob <- my_fct(a = ff)
+pres_prob <- my_prob(x = logit_prob)
+#pres_prob
+plot(x = ff,y = pres_prob, type = 'l')
+
+plot(logit_prob ~ff)
+plot(pres_prob~logit_prob)
+```
+
+
+### logistic regression and inverse logit
+
+```{r}
+seq_data  <- seq(from = 0, to = 1, by=0.05)
+#simulate trend:
+#tmp <- pbinom(1:length(seq_data),length(seq_data),0.7)
+#trend_data <-  tmp +  rnorm(length(tmp),mean=0,sd=0.01)
+trend_data <- pbinom(q = 1:length(seq_data), size = length(seq_data), prob = 0.7)
+
+plot(x = seq_data, y = trend_data, pch = 15)
+#plot(x=seq_data,y=tmp, pch=15)
+
+my.lm <- glm(formula = trend_data ~ seq_data, family = 'binomial', na.action = na.omit)
+myintercept <- my.lm$coefficients[[1]]
+myslope <-  my.lm$coefficients[[2]]
+my_fct <- function(a, intcpt, slp) {intcpt + (slp * a)}
+my_prob <- function(x) {1 / (1 + exp(x = -x))}
+
+# ff = e.g. frequency of forest in a cell
+ff <- seq(from = 0, to = 1 ,by = 0.05)
+
+logit_prob <- my_fct(a = ff, intcpt = myintercept, slp = myslope)
+pres_prob <- my_prob(x = logit_prob)
+#pres_prob
+plot(x = ff, y = pres_prob, type = 'l')
+```
+
+<br>
+# END
+
+
+
