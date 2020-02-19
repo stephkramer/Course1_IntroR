@@ -1,6 +1,6 @@
 ---
 title: "Tutorial Part I - Quick introduction to R"
-author: "Stephanie Kramer-Schadt, Alex courtiol, Moritz Wenzler"
+author: "Stephanie Kramer-Schadt, Alex Courtiol, Moritz Wenzler"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -14,6 +14,7 @@ editor_options:
   chunk_output_type: console
 ---
 # Basics
+This first outline of this course has been developed in 2012 by Alex Courtiol and has ever since 'evolved' in courses I gave. The short intro contains the most important commands and functions to handle and manipulate data needed for following the course 'biodiversity dynamics'.
 
 ## Setting the work directory
 
@@ -536,7 +537,7 @@ dev.off()
 
 <br><br>
 
-# Programming with R (shortly) 
+# Advanced - Programming with R (shortly) 
 
 ## Simulate your own data
 
