@@ -16,9 +16,7 @@ editor_options:
   chunk_output_type: console
 ---
 # Basics
-This first outline of this course has been developed in 2012 by Alex Courtiol and has ever since 'evolved' in courses I gave. The short intro contains the most important commands and functions to handle and manipulate data needed for following the course 'biodiversity dynamics'.
-
-The first outline of this course has been developed in 2012 by Alex Courtiol and has ever since 'evolved' in courses I gave and plished by Moritz. This short intro contains the most important commands and functions to handle and manipulate data needed for following the course 'biodiversity dynamics'. Open your RStudio and paste the lines in the grey boxes into your R file and follow the course...
+The first outline of this course has been developed in 2012 by Alex Courtiol and has ever since 'evolved' in courses I gave and polished by Moritz. This short intro contains the most important commands and functions to handle and manipulate data and to follow the course 'biodiversity dynamics. Open your RStudio and paste the lines in the grey boxes into your R script, run the lines and follow the course...
 
 
 ## Setting the work directory
