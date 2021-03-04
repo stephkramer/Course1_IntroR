@@ -15,9 +15,21 @@ output:
 editor_options:
   chunk_output_type: console
 ---
-# Basics
-The first outline of this course has been developed in 2012 by Alex Courtiol and has ever since 'evolved' in courses I gave and polished by Moritz. This short intro contains the most important commands and functions to handle and manipulate data and to follow the course 'biodiversity dynamics. Open your RStudio and paste the lines in the grey boxes into your R script, run the lines and follow the course...
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+knitr::opts_knit$set(root.dir = 'C:/Users/kramer/PopDynIZW Dropbox/Steph Kramer')
+```
+
+# Basics
+
+The first outline of this course has been developed in 2012 by Alex Courtiol and has ever since 'evolved' in courses I gave and polished by Moritz. This short intro contains the most important commands and functions to handle and manipulate data and to follow the course 'biodiversity dynamics. Open your RStudio and type or paste the lines in the grey boxes into your R script, run the lines and follow the course... Or: Click on *Code/Download ZIP* and unzip the folder. However, for learning reasons, I actually recommend to even type the functions and commands by hand.
+
+For deepening your R skills, I recommend the tutorials of  
+
+* https://ourcodingclub.github.io/tutorials.html
+
+They provide screenshots and glossaries of the most important functions in the end.
 
 ## Setting the work directory
 
@@ -25,8 +37,13 @@ Please set your OWN working directory!
 Function **paste** 
 
 ```{r}
-setwd('c:/Users/kramer/Dropbox/_TU_BiodivDynamics2019/Day1_RIntro')
-output_wd <- paste("c:/Users/kramer/Dropbox/_TU_BiodivDynamics2019", "/", "Output", sep = '')
+getwd() #check where you are on your PC, change it to your folder
+# you can skip the following if you are already working in a project
+setwd('C:/Users/kramer/PopDynIZW Dropbox/Steph Kramer/_GitHub/Course1_IntroR')
+#-- no need to do so if you created an R-project --
+
+# to keep folders clean, store all output in a separate folder
+output_wd <- paste("C:/Users/kramer/PopDynIZW Dropbox/Steph Kramer", "/", "A_Borrar", sep = '')
 ```
 
 ## Basics: R for calculus
@@ -49,6 +66,7 @@ what_is_one_plus_one <- 'two'
 ### Spelling - Case sensitivity
 
 ```{r}
+# Find the errors - try these lines
 #What_is_one_plus_one
 #what_is_one_plusone
 #what_is_one_plus_two
@@ -74,12 +92,11 @@ what_is_one_plus_one <- 1 + 1
 
 ## Basics: Getting help
 
-```{r}
+```{r, eval=FALSE}
 # <function_name> or <function_name>() shows the function
-
- citation() # how to cite R
- ?citation() # getting help use ? (or??) or
- help(citation)
+citation() # how to cite R
+?citation() # getting help use ? (or??) or
+help(citation)
 ```
 
 ## Basics: Functions 
@@ -90,9 +107,9 @@ functions indicated by ()
 mean() # what's wrong?
 ```
 
-this function needs further parameters
+this function needs further parameters (called Arguments in the help)
 ```{r}
-?mean() # which ones?
+?mean() # which parameters are needed?
 ```
 
 
@@ -110,7 +127,7 @@ mean(x = vector_of_numbers)
 ### Arguments
 
 ```{r}
-mean(x = vector_of_numbers) #n.b. better use argument names
+mean(x = vector_of_numbers) #n.b. better use argument names (x= ...)
 ```
 
 ```{r, eval = F}
@@ -153,20 +170,20 @@ summary(object = wsp_drfly2)
 ```
 
 ## Operators 
-###Arithmetic operators
+
+### Arithmetic operators
 
 ```{r}
-
 ?Arithmetic
 wsp_drfly2 * 2
 wsp_drfly2 * 10 - 100
 ```
 
-###Logical operators
+### Logical operators
 
 ```{r}
 
-?Logic
+?base::Logic 
 wsp_drfly2 > 10 # >=, <, <=, &, | , !=, ==
 wsp_drfly2 == 75 # n.b. difference to = or <- !!!!
 ```
@@ -194,7 +211,7 @@ insect_type
 
 ## Dataframe [df]
 
-```{r}
+```{r, tidy=TRUE}
 wsp_table <- data.frame(wingspan = wsp, insect = insect_type)
 head(x = wsp_table) # head() returns first 6 rows # tail()
 wsp_table
@@ -270,6 +287,7 @@ wsp_which
 ```
 
 ### Data Manipulation
+
 #### Removing rows/columns 
 
 Omit rows using a minus sign
@@ -333,7 +351,7 @@ wsp_matrix[, 1]
 wsp_matrix['dragonfly', ] # == wsp_matrix[1, ]
 ```
 
-matrix setup per column
+matrix setup per column:
 
 ```{r}
 wsp_matrix <- matrix(data = c(wsp_drfly2, wsp_butfly2), ncol = 2)
@@ -383,6 +401,8 @@ lapply(X = wsp_l, FUN = mean, na.rm = T)
 # on skalars: #class(what_is_one_plus_one)
 ```
 
+For effective data manipulation, learn 'tidyverse','dplyr' and 'broom' piping language.
+
 <br><br>
 
 # Managing Data 
@@ -405,8 +425,13 @@ head(x = wsp)
 **plot()** is the universal function for scatter plots or line diagrams
 
 ```{r}
-plot(x = wsp)
+# this does not work because you need to specify numeric values, 
+# column 'insect' is a character
+# plot(x = wsp)
+
+# solution
 plot(x = wsp$wingspan)
+
 ```
 
 
@@ -422,8 +447,11 @@ plot(x = wsp$wingspan, col= color_for_insect_type)
 **par()** to pimp up your plot
 
 ```{r}
-?par #to set graphical parameters
- plot(x = wsp$wingspan, col = color_for_insect_type, pch = 3,
+# now have a look at
+?base::plot #and
+?par # of how to make the plots more pretty and how to set graphical parameters
+
+plot(x = wsp$wingspan, col = color_for_insect_type, pch = 3,
       xlab = "unsorted values", ylab = "wsp [mm]", cex = 3,
       cex.lab = 1.2, cex.axis = 0.5, las = 2,
       col.axis = "blue")
@@ -446,7 +474,7 @@ abline(h = 75, lty = "dotted")
 
 ```{r}
 plot(x = wsp$wingspan, col = color_for_insect_type,pch = 16, cex = 3)
-arrows(x0 = 5, y0 = 85, x1 = 5, y1 = 82, col = "purple")
+arrows(x0 = 5, y0 = 125, x1 = 5, y1 = 82, col = "purple")
 arrows(x0 = 15, y0 =  70, x1 = 17, y1 =  75, col = "black", lwd = 3) #lwd=line width
 text(x = 3, y = 70, labels = "DRAGONFLY",cex=0.8)
 ```
@@ -480,9 +508,11 @@ hist(x = mydata$wingspan,
      freq = F, col = 'lightgrey', main = '')
 ```
 
-
+It is also possible to save the results of the histogram in an object
 ```{r}
-my_h <- hist(x = mydata$wingspan, breaks = seq(min(mydata$wingspan), max(mydata$wingspan), by = 3), plot = FALSE)
+my_h <- hist(x = mydata$wingspan, 
+             breaks = seq(min(mydata$wingspan), 
+                          max(mydata$wingspan), by = 3), plot = FALSE)
 my_h
 ```
 
@@ -507,6 +537,7 @@ coplot(formula = mydata$wingspan ~ mydata$wind_speed | mydata$insect, pch = 16)
 ### Graphics device division
 
 ```{r}
+#mar = margin of figure in blue, oma = outer margin in green
 par(mfrow = c(1, 2), mar = c(5, 4, 1, 1), oma = c(1.5, 2, 1, 1))
 plot(x = mydata$wingspan, col = color_for_insect_type, pch = 16, cex = 3)
 boxplot(formula = mydata$wingspan ~ mydata$insect)
@@ -525,7 +556,8 @@ pdf(file = 'MyPdf.pdf', width =  10, height = 10)
 with(data = mydata, expr = {coplot(wingspan ~ wind_speed | insect, pch=16)})
 dev.off()
 #- Multiple Plot
-jpeg(file = 'MyJPG.jpg')
+jpeg(file = 'MyJPG.jpg') #n.b.! Correct output folder path!, e.g.:
+# jpeg(file =  paste0(output_wd,'/MyJPG.jpg')) #don't forget the /
 par(mfrow = c(1, 2))
 barplot(my_bp, col = rainbow(17), main = 'Barplot', xlab = 'wingspan', ylab = 'Count')
 hist(x = mydata$wingspan, 
@@ -535,25 +567,148 @@ hist(x = mydata$wingspan,
      freq = T, 
      col = rainbow(6))
 dev.off()
-#n.b.! Correct output folder path!
+
 ```
+
+## Fancy plotting with ggplot2
+
+Let's be honest, the above plots are ugly. For making nice plots you can use in 
+theses or publications, change to ggplot.
+<br>
+
+I strongly recommend the course by Cedric Scherer:  
+* https://www.cedricscherer.com/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/
+<br>
+or by the coding club:
+<br>
+* https://ourcodingclub.github.io/tutorials/trends-analysis-dataviz/
+<br>
+
+The *ggplot* language works in layers to be built and added. First, load the library,
+and plot the canvas for 'mydata':
+```{r}
+library(ggplot2) # don't forget to install the package
+ggplot(data=mydata) # nothing happens but a grey panel appearing
+```
+
+Now, add layers with the '+' sign. First, specify the type of plot (geom_point),
+and then which column to plot and how they should look like with 'aes', 
+standing for 'aesthetics':
+```{r}
+ggplot(data=mydata) + geom_point(aes(x=wind_speed, y =wingspan))
+```
+
+Pimp up the plot, look at the specifications e.g. here:
+https://ggplot2.tidyverse.org/articles/ggplot2-specs.html
+```{r}
+ggplot(data=mydata) + geom_point(
+                                 aes(x=wind_speed, y =wingspan),
+                                 shape=17,
+                                 size=5,
+                                 col='grey70',
+                                 alpha = 0.5
+                                 )
+```
+
+If you like the look, you can even store this plot in an object
+```{r}
+myggplot1 <- ggplot(data=mydata) + 
+                geom_point(aes(x=wind_speed, y =wingspan),
+                           shape=17,
+                           size=5,
+                           col="red",
+                           alpha = 0.4) #makes shapes transparent
+#to plot, call the object
+myggplot1
+```
+
+Add the labels, and your favourite plotting theme:  
+https://ggplot2.tidyverse.org/reference/ggtheme.html
+or check 'library(ggthemes)'
+```{r}
+myggplot1 + 
+  theme_dark() + 
+  labs(x= 'Wind Speed', y= 'Wing span [mm]', title='',size= 15)
+```
+
+Now make the plot per insect with 'facet':
+
+```{r}
+myggplot1 + 
+  theme_light() + 
+  labs(x= 'Wind Speed', y= 'Wing span [mm]', title='',size= 15) +
+  facet_grid(. ~ insect)
+```
+
+Now, make a nice boxplot adding the points with *geom_jitter*
+
+```{r}
+ggplot(mydata, aes(insect, wingspan)) +
+  geom_boxplot() +
+  geom_jitter(color = wind_speed,width = .1, alpha = .5,size=5) + 
+  labs(x = "Insect taxon", y = "Wing span [mm]")
+```
+
+An informative alternative are violin-plots:
+
+```{r}
+ggplot(mydata, aes(insect, wingspan)) +
+  geom_violin(fill = "gray80", size = 1, alpha = .5) +
+  geom_jitter(color = 'grey50',width = .1, alpha = .5, size=10) + 
+  labs(x = "Insect taxon", y = "Wing span [mm]")
+```
+
+Or another beautiful possibility, the ridge plot. Please note: this is a density plot,
+forcing beginning and end through zero. But: we never measured wing spans of zero!
+
+```{r}
+library(ggridges) #install package
+ggplot(mydata, aes(wingspan, factor(insect))) +
+   geom_density_ridges(fill = "gray90") +
+   labs(x = "Wing span [mm]", y = "Taxon") +
+   theme_light()
+```
+
+Happy with the plot? Then save it:
+
+```{r}
+myridgeplot <- ggplot(mydata, aes(wingspan, factor(insect))) +
+   geom_density_ridges(fill = "gray90") +
+   labs(x = "Wing span [mm]", y = "Taxon") +
+   theme_light()
+
+myfilename <- "ridges.pdf"
+
+ggsave(myridgeplot, file=myfilename, width=4, height=4)
+```
+
+And find more inspiration here: https://www.r-graph-gallery.com/
 
 <br><br>
 
 # Advanced - Programming with R (shortly) 
 
+This is very helpful for understanding your own data (i.e. simulate data where
+you know exactly what happens and where you know what should come out) or
+when you have repeated operations to do.
+
 ## Simulate your own data
 
-```{r}
-seq_data  <- seq(from = 1, to = 100, by = 1)
-uni_data  <- runif(n = 100, min = 1, max = 10)
-norm_data <- rnorm(n = 100, mean = 5, sd = 0.5)
-#simulate trend:
-trend_data <- 0.1 * seq_data + rnorm(n = length(seq_data), mean = 0, sd = 1)
+R has a lot of distribution functions:  
+https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Distributions.html
 
-plot(x = seq_data, y = uni_data, pch = 15)
-points(x = norm_data, pch = 20, col = 'red')
-points(x = trend_data, pch = 17, col = 'blue')
+```{r, tidy=TRUE}
+seq_data  <- seq(from = 1, to = 100, by = 1)     # create the x-axis
+uni_data  <- runif(n = 100, min = 1, max = 10)   # create random uniform data between 1-10
+norm_data <- rnorm(n = 100, mean = 1, sd = 0.5)  # create normally distributed data
+
+#simulate trend = y-axis: intercept with noise + (estimate * variable)
+trend_data <-  norm_data + (0.1 * seq_data)
+
+par(mfrow=c(1,1))
+plot(x = seq_data, y = uni_data, pch = 15, ylim = c(0,11)) #uniform -> runif
+points(x = norm_data, pch = 20, col = 'red') #Gaussian 
+points(x = trend_data, pch = 17, col = 'blue') #trend
 ```
 
 ### Just for fun: some stats....
@@ -561,10 +716,12 @@ points(x = trend_data, pch = 17, col = 'blue')
 ```{r}
 my.lm <- lm(formula = trend_data ~ seq_data)
 #abline(my.lm)
-summary(object = my.lm) #surprise....
+summary(object = my.lm) #surprise.... the intercept is ~1 and estimate ~ 0.1
 ```
 
 ## The *for* loop
+
+saves a lot of time to automate operations, ie. do the same operation on 1000 datasets
 
 ```{r}
 #- for repetitive operations
@@ -580,48 +737,66 @@ for(i in 1:4)
 
 ## Writing your own function
 
+Also for repetitive actions and often used operations. the basic syntax is:  
+function(*argument*){1 + 1 - *argument*}  
+The function needs an argument, like e.g. a vector with numbers in the case 
+of the function mean(), and in the {} some operations are done with the argument.
+
 ```{r}
-my_fct <- function(a) {-8.13 + (12.55 * a)}
-my_prob <- function(x) {1/ (1 + exp(x = -x))}
+f_logit <- function(a) {-8.13 + (12.55 * a)}
+f_prob <- function(x) {1/ (1 + exp(x = -x))} # inverse logit
 
 # ff = e.g. frequency of forest in a cell
 ff <- seq(from = 0, to = 1 ,by = 0.05)
 
-logit_prob <- my_fct(a = ff)
-pres_prob <- my_prob(x = logit_prob)
+the_logit  <- f_logit(a = ff)
+pres_prob  <- f_prob(x = the_logit)
+
 #pres_prob
 plot(x = ff,y = pres_prob, type = 'l')
-
-plot(logit_prob ~ff)
-plot(pres_prob~logit_prob)
 ```
 
 
-### logistic regression and inverse logit
+### Logistic regression and inverse logit
 
-```{r}
+Similar to example above
+
+```{r, tidy=TRUE}
+# define functions at the beginning of a script:
+f_logit <- function(var_value, intcpt, slp) {intcpt + (slp * var_value)}
+f_prob  <- function(x) {1 / (1 + exp(x = -x))} #inverse logit
+
+# simulate trend or load data:
 seq_data  <- seq(from = 0, to = 1, by=0.05)
-#simulate trend:
-#tmp <- pbinom(1:length(seq_data),length(seq_data),0.7)
-#trend_data <-  tmp +  rnorm(length(tmp),mean=0,sd=0.01)
 trend_data <- pbinom(q = 1:length(seq_data), size = length(seq_data), prob = 0.7)
-
 plot(x = seq_data, y = trend_data, pch = 15)
-#plot(x=seq_data,y=tmp, pch=15)
 
+# analyse data
 my.lm <- glm(formula = trend_data ~ seq_data, family = 'binomial', na.action = na.omit)
+summary(my.lm)
+
+# store the output; access my.lm object via: 
+#str(my.lm)
 myintercept <- my.lm$coefficients[[1]]
-myslope <-  my.lm$coefficients[[2]]
-my_fct <- function(a, intcpt, slp) {intcpt + (slp * a)}
-my_prob <- function(x) {1 / (1 + exp(x = -x))}
+myslope     <- my.lm$coefficients[[2]]
 
-# ff = e.g. frequency of forest in a cell
-ff <- seq(from = 0, to = 1 ,by = 0.05)
+# predict it for a certain range of variable values (seq_data)...
+mylogit   <- f_logit(var_value = seq_data, intcpt = myintercept, slp = myslope)
+pres_prob <- f_prob(x = mylogit)
 
-logit_prob <- my_fct(a = ff, intcpt = myintercept, slp = myslope)
-pres_prob <- my_prob(x = logit_prob)
-#pres_prob
-plot(x = ff, y = pres_prob, type = 'l')
+# strictly linear relationship on the logit scale:
+plot(x = seq_data, y = mylogit, type = 'l', lwd = 2)
+
+# on the response / inverse logit scale:
+plot(x = seq_data, y = pres_prob, type = 'l', lwd = 2)
+
+# ...or predict it only for a single value:
+myvalue <- 0.7
+mylogit_s   <- f_logit(var_value = myvalue, intcpt = myintercept, slp = myslope)
+(pres_prob_s <- f_prob(x = mylogit_s))
+
+abline(v=myvalue, lty=2,lwd=0.1)
+abline(h=pres_prob_s, lty=2,lwd=0.1)
 ```
 
 <br>
