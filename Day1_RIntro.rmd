@@ -669,6 +669,67 @@ ggplot(mydata, aes(wingspan, factor(insect))) +
    theme_light()
 ```
 
+
+The following is playing around with images  
+
+```{r}
+library(rphylopic) # install first
+library(ggpubr)    # for arranging the plots
+
+#import phylopic (go to phylopic.org -> browse image -> click on image to get url)
+drfly <- image_data("2894776f-a2cf-4475-b13d-6d8ea1607ea4", size = 128)[[1]]
+bufly <- image_data("ef0f4ab5-9714-45dc-8760-57e9080f941e", size = 128)[[1]]
+
+p1 <- ggplot(data=mydata) + 
+             geom_point(aes(x=wind_speed, y =wingspan)) + 
+             theme_light() + 
+             labs(x= 'Wind Speed', y= 'Wing span [mm]', title='',size= 15) +
+             add_phylopic(img=drfly)
+
+###
+p2 <- ggplot(data=mydata,aes(x=wind_speed, y =wingspan)) + 
+                theme_light() + 
+                geom_point(color = rgb(0,0,0,0))
+
+sub_drag <- subset(mydata, insect == 'dragonfly')
+sub_butt <- subset(mydata, insect == 'butterfly')
+
+for (i in 1:nrow(sub_drag)) {
+  p2 <- p2 + add_phylopic(drfly, 1, 
+                           sub_drag$wind_speed[i], 
+                           sub_drag$wingspan[i],10,'blue')}
+for (j in 1:nrow(sub_butt)) {
+  p2 <- p2 + add_phylopic(bufly, 1, 
+                           sub_butt$wind_speed[j], 
+                           sub_butt$wingspan[j],10,'red')}
+
+###
+p3 <- ggplot(mydata, aes(wingspan, factor(insect))) +
+                geom_density_ridges(fill = "gray90") +
+                labs(x = "Wing span [mm]", y = "Taxon") +
+                theme_light() + 
+                add_phylopic(img=bufly, alpha=1, 
+                             x = 50, y = 1.5, ysize=20) +
+                add_phylopic(img=drfly, alpha=1, 
+                             x = 80, y = 3, ysize=25) 
+
+# TRY:
+# ggarrange(p1, p2, p3,ncol = 2, nrow = 2)
+
+ggarrange(
+  p3,                # First row with ridge plot
+  # Second row with other plots
+  ggarrange(p1, p2, ncol = 2, labels = c("B", "C")), 
+  nrow = 2, 
+  labels = "A"       # Label of the line plot
+  ) # %>% ggexport(filename = "multifigure.png")# and save the plot
+
+```
+
+
+
+
+
 Happy with the plot? Then save it:
 
 ```{r}
