@@ -3,17 +3,30 @@ title: "Tutorial Part I - Quick introduction to R"
 author: "Stephanie Kramer-Schadt, Alex Courtiol, Moritz Wenzler"
 date: "`r Sys.Date()`"
 output:
-  #prettydoc::html_pretty:
-  #  theme: cayman
-  html_document:
+  rmdformats::readthedown:
+    highlight: kate
     code_folding: show
-    link-citations: yes
-    toc: yes
     toc_depth: 4
-    toc_float: yes
-  slidy_presentation: default
+    toc_float: true
 editor_options:
   chunk_output_type: console
+params:
+  date: !r Sys.Date()
+---
+
+<style>
+h1 {
+  color: Orange ;
+}
+h2, h3, h4, h5, h6, legend {
+  color: Indigo ;
+}
+
+#sidebar h2 {
+  background-color: Indigo;
+}
+</style>
+
 ---
 
 ```{r setup, include=FALSE}
